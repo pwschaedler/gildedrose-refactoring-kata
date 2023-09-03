@@ -1,8 +1,6 @@
-bin
-obj
-*.sln.DotSettings.user
-.vs
-vendor
-.idea
+*.pyc
+.cache
+.coverage
+.idea/
 *.iml
-csharpcore/GildedRoseTests/ApprovalTest.ThirtyDays.received.txt
+.venv
