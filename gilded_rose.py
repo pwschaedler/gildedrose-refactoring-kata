@@ -10,9 +10,10 @@ class GildedRose:
 
     def __init__(self, items: Iterable[Item]) -> None:
         self.items = items
+        """NOTE: Do not change attribute."""
 
     def update_quality(self) -> None:
-        """Update quality for all items."""
+        """Update quality for all items at the end of each day."""
         for item in self.items:
             if (
                 item.name != "Aged Brie"
@@ -47,12 +48,20 @@ class GildedRose:
 
 
 class Item:
-    """A single inventory item."""
+    """
+    A single inventory item.
+    NOTE: Do not change class.
+    """
 
-    def __init__(self, name: str, sell_in: int, quality: int):
+    def __init__(self, name: str, sell_in: int, quality: int) -> None:
         self.name = name
+        """Item name."""
+
         self.sell_in = sell_in
+        """Number of days left to sell the item."""
+
         self.quality = quality
+        """How valuable the item is."""
 
     def __repr__(self) -> str:
         return f'{self.name}, {self.sell_in}, {self.quality}'
