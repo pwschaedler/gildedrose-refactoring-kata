@@ -49,3 +49,49 @@ def test_sulfuras() -> None:
     gilded_rose.update_quality()
     assert items[0].sell_in == 10
     assert items[0].quality == 80
+
+
+def test_backstage_passes_quality_increases_before_concert() -> None:
+    """
+    "Backstage passes", like aged brie, increases in Quality as its SellIn value
+    approaches.
+    """
+    items = [Item('Backstage passes to a TAFKAL80ETC concert', 10, 0)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()
+    assert items[0].quality > 0
+
+
+def test_backstage_passes_quality_increases_by_2_10_days_before() -> None:
+    """
+    Backstage pass quality increases by 2 where there are 6-10 days left,
+    inclusive.
+    """
+    items = [Item('Backstage passes to a TAFKAL80ETC concert', 10, 0)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()  # 10 days left
+    gilded_rose.update_quality()
+    gilded_rose.update_quality()
+    gilded_rose.update_quality()
+    gilded_rose.update_quality()  # 6 days left
+    assert items[0].quality == 10
+
+
+def test_backstage_passes_quality_increases_by_3_5_days_before() -> None:
+    """Backstage pass quality increases by 3 where there are <= 5 days left."""
+    items = [Item('Backstage passes to a TAFKAL80ETC concert', 5, 0)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()  # 5 days left
+    gilded_rose.update_quality()
+    gilded_rose.update_quality()
+    gilded_rose.update_quality()
+    gilded_rose.update_quality()  # 1 day left
+    assert items[0].quality == 15
+
+
+def test_backstage_passes_quality_0_after_concert() -> None:
+    """Backstage pass quality drops to 0 after the concert."""
+    items = [Item('Backstage passes to a TAFKAL80ETC concert', 0, 50)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()
+    assert items[0].quality == 0
