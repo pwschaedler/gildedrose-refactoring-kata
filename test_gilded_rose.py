@@ -17,3 +17,15 @@ def test_quality_never_negative() -> None:
     gilded_rose = GildedRose(items)
     gilded_rose.update_quality()
     assert items[0].quality == 0
+
+
+def test_aged_brie_increases_quality() -> None:
+    """ "Aged Brie" actually increases in Quality the older it gets."""
+    items = [Item('Aged Brie', 1, 0)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()
+    assert items[0].quality == 1
+
+    # Past its sell by date, it increases in quality by 2
+    gilded_rose.update_quality()
+    assert items[0].quality == 3
