@@ -1,16 +1,11 @@
-# -*- coding: utf-8 -*-
-import unittest
+"""Gilded rose tests."""
 
-from gilded_rose import Item, GildedRose
+from gilded_rose import GildedRose, Item
 
 
-class GildedRoseTest(unittest.TestCase):
-    def test_foo(self):
-        items = [Item("foo", 0, 0)]
-        gilded_rose = GildedRose(items)
-        gilded_rose.update_quality()
-        self.assertEquals("fixme", items[0].name)
-
-        
-if __name__ == '__main__':
-    unittest.main()
+def test_foo() -> None:
+    """Placeholder test."""
+    items = [Item("foo", 0, 0)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()
+    assert "fixme" == items[0].name

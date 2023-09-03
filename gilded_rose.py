@@ -1,13 +1,23 @@
-# -*- coding: utf-8 -*-
+"""Gilded Rose Refactoring Kata"""
 
-class GildedRose(object):
+from __future__ import annotations
 
-    def __init__(self, items):
+from typing import Iterable
+
+
+class GildedRose:
+    """Main wrapper class."""
+
+    def __init__(self, items: Iterable[Item]) -> None:
         self.items = items
 
-    def update_quality(self):
+    def update_quality(self) -> None:
+        """Update quality for all items."""
         for item in self.items:
-            if item.name != "Aged Brie" and item.name != "Backstage passes to a TAFKAL80ETC concert":
+            if (
+                item.name != "Aged Brie"
+                and item.name != "Backstage passes to a TAFKAL80ETC concert"
+            ):
                 if item.quality > 0:
                     if item.name != "Sulfuras, Hand of Ragnaros":
                         item.quality = item.quality - 1
@@ -37,10 +47,12 @@ class GildedRose(object):
 
 
 class Item:
-    def __init__(self, name, sell_in, quality):
+    """A single inventory item."""
+
+    def __init__(self, name: str, sell_in: int, quality: int):
         self.name = name
         self.sell_in = sell_in
         self.quality = quality
 
-    def __repr__(self):
-        return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
+    def __repr__(self) -> str:
+        return f'{self.name}, {self.sell_in}, {self.quality}'
