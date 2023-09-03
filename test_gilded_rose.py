@@ -3,9 +3,9 @@
 from gilded_rose import GildedRose, Item
 
 
-def test_foo() -> None:
-    """Placeholder test."""
-    items = [Item('foo', 0, 0)]
+def test_passed_sell_by_double_quality_degrade() -> None:
+    """Once the sell by date has passed, Quality degrades twice as fast."""
+    items = [Item('foo', 0, 2)]
     gilded_rose = GildedRose(items)
     gilded_rose.update_quality()
-    assert 'foo' == items[0].name
+    assert items[0].quality == 0
