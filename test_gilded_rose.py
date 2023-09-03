@@ -37,3 +37,15 @@ def test_quality_never_more_than_50() -> None:
     gilded_rose = GildedRose(items)
     gilded_rose.update_quality()
     assert items[0].quality == 50
+
+
+def test_sulfuras() -> None:
+    """
+    "Sulfuras", being a legendary item, never has to be sold or decreases in
+    Quality.
+    """
+    items = [Item('Sulfuras, Hand of Ragnaros', 10, 80)]
+    gilded_rose = GildedRose(items)
+    gilded_rose.update_quality()
+    assert items[0].sell_in == 10
+    assert items[0].quality == 80
