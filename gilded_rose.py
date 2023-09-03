@@ -15,36 +15,48 @@ class GildedRose:
     def update_quality(self) -> None:
         """Update quality for all items at the end of each day."""
         for item in self.items:
-            if (
-                item.name != 'Aged Brie'
-                and item.name != 'Backstage passes to a TAFKAL80ETC concert'
-            ):
-                if item.quality > 0:
-                    if item.name != 'Sulfuras, Hand of Ragnaros':
-                        item.quality = item.quality - 1
+            self.update_single_quality_pre_sellin(item)
+            self.update_single_sell_in(item)
+            self.update_single_quality_post_sellin(item)
+
+    def update_single_quality_pre_sellin(self, item: Item) -> None:
+        """Update the quality for a single item before sell-in updates."""
+        if (
+            item.name != 'Aged Brie'
+            and item.name != 'Backstage passes to a TAFKAL80ETC concert'
+        ):
+            if item.quality > 0:
+                if item.name != 'Sulfuras, Hand of Ragnaros':
+                    item.quality = item.quality - 1
+        else:
+            if item.quality < 50:
+                item.quality = item.quality + 1
+                if item.name == 'Backstage passes to a TAFKAL80ETC concert':
+                    if item.sell_in < 11:
+                        if item.quality < 50:
+                            item.quality = item.quality + 1
+                    if item.sell_in < 6:
+                        if item.quality < 50:
+                            item.quality = item.quality + 1
+
+    def update_single_quality_post_sellin(self, item: Item) -> None:
+        """Update the quality for a single item after sell-in updates."""
+        if item.sell_in < 0:
+            if item.name != 'Aged Brie':
+                if item.name != 'Backstage passes to a TAFKAL80ETC concert':
+                    if item.quality > 0:
+                        if item.name != 'Sulfuras, Hand of Ragnaros':
+                            item.quality = item.quality - 1
+                else:
+                    item.quality = item.quality - item.quality
             else:
                 if item.quality < 50:
                     item.quality = item.quality + 1
-                    if item.name == 'Backstage passes to a TAFKAL80ETC concert':
-                        if item.sell_in < 11:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-                        if item.sell_in < 6:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-            if item.name != 'Sulfuras, Hand of Ragnaros':
-                item.sell_in = item.sell_in - 1
-            if item.sell_in < 0:
-                if item.name != 'Aged Brie':
-                    if item.name != 'Backstage passes to a TAFKAL80ETC concert':
-                        if item.quality > 0:
-                            if item.name != 'Sulfuras, Hand of Ragnaros':
-                                item.quality = item.quality - 1
-                    else:
-                        item.quality = item.quality - item.quality
-                else:
-                    if item.quality < 50:
-                        item.quality = item.quality + 1
+
+    def update_single_sell_in(self, item: Item) -> None:
+        """Update the sell-in for a single item."""
+        if item.name != 'Sulfuras, Hand of Ragnaros':
+            item.sell_in = item.sell_in - 1
 
 
 class Item:
