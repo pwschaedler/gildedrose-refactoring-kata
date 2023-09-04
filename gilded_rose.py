@@ -2,15 +2,23 @@
 
 from __future__ import annotations
 
-from typing import Iterable
+from typing import Callable, ClassVar, Iterable, Protocol
 
-AGED_BRIE = 'Aged Brie'
-SULFURAS = 'Sulfuras, Hand of Ragnaros'
-BACKSTAGE_PASS = 'Backstage passes to a TAFKAL80ETC concert'
+
+class SupportsUpdate(Protocol):
+    """Interface for item updater classes."""
+
+    def update_quality(self, item: Item) -> None:
+        """Update the quality of an item."""
+
+    def update_sell_in(self, item: Item) -> None:
+        """Update the sell-in days for an item."""
 
 
 class GildedRose:
     """Main wrapper class."""
+
+    item_handlers: ClassVar[dict[str, type[SupportsUpdate]]] = {}
 
     def __init__(self, items: Iterable[Item]) -> None:
         self.items = items
@@ -19,35 +27,21 @@ class GildedRose:
     def update_quality(self) -> None:
         """Update quality for all items at the end of each day."""
         for item in self.items:
-            self.update_single_quality(item)
-            self.update_single_sell_in(item)
+            updater = self.item_handlers.get(item.name, DefaultUpdater)()
+            updater.update_quality(item)
+            updater.update_sell_in(item)
 
-    def update_single_quality(self, item: Item) -> None:
-        """Update the quality for a single item before sell-in updates."""
-        if item.name == SULFURAS:
-            return
-        if item.name == BACKSTAGE_PASS and item.sell_in <= 0:
-            item.quality = 0
-            return
+    @classmethod
+    def register_updater(
+        cls, label: str
+    ) -> Callable[[type[SupportsUpdate]], type[SupportsUpdate]]:
+        """Register an updater."""
 
-        quality_modifier = -1
-        if item.name == AGED_BRIE:
-            quality_modifier = 1
-        if item.name == BACKSTAGE_PASS and 5 < item.sell_in <= 10:
-            quality_modifier = 2
-        if item.name == BACKSTAGE_PASS and 0 < item.sell_in <= 5:
-            quality_modifier = 3
-        if item.sell_in <= 0:
-            quality_modifier *= 2
+        def wrapper(updater: type[SupportsUpdate]) -> type[SupportsUpdate]:
+            cls.item_handlers[label] = updater
+            return updater
 
-        item.quality = max(0, min(item.quality + quality_modifier, 50))
-        return
-
-    def update_single_sell_in(self, item: Item) -> None:
-        """Update the sell-in for a single item."""
-        if item.name == SULFURAS:
-            return
-        item.sell_in -= 1
+        return wrapper
 
 
 class Item:
@@ -68,3 +62,18 @@ class Item:
 
     def __repr__(self) -> str:
         return f'{self.name}, {self.sell_in}, {self.quality}'
+
+
+class DefaultUpdater:
+    """Updater for items with default behavior."""
+
+    def update_quality(self, item: Item) -> None:
+        """Update the quality of an item."""
+        modifier = -1
+        if item.sell_in <= 0:
+            modifier *= 2
+        item.quality = max(0, min(item.quality + modifier, 50))
+
+    def update_sell_in(self, item: Item) -> None:
+        """Update the sell-in days for an item."""
+        item.sell_in -= 1

@@ -1,6 +1,9 @@
 """Gilded rose tests."""
 
-from gilded_rose import AGED_BRIE, BACKSTAGE_PASS, SULFURAS, GildedRose, Item
+from aged_brie import AGED_BRIE
+from backstage_pass import BACKSTAGE_PASS
+from gilded_rose import GildedRose, Item
+from sulfuras import SULFURAS
 
 
 def test_passed_sell_by_double_quality_degrade() -> None:
