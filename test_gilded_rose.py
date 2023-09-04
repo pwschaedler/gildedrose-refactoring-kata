@@ -2,6 +2,7 @@
 
 from aged_brie import AGED_BRIE
 from backstage_pass import BACKSTAGE_PASS
+from conjured import CONJURED
 from gilded_rose import Item, update_quality
 from sulfuras import SULFURAS
 
@@ -87,5 +88,14 @@ def test_backstage_passes_quality_increases_by_3_5_days_before() -> None:
 def test_backstage_passes_quality_0_after_concert() -> None:
     """Backstage pass quality drops to 0 after the concert."""
     items = [Item(BACKSTAGE_PASS, 0, 50)]
+    update_quality(items)
+    assert items[0].quality == 0
+
+
+def test_conjured() -> None:
+    """ "Conjured" items degrade in Quality twice as fast as normal items."""
+    items = [Item(CONJURED, 1, 6)]
+    update_quality(items)
+    assert items[0].quality == 4
     update_quality(items)
     assert items[0].quality == 0
