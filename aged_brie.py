@@ -1,11 +1,11 @@
 """Module for aged brie inventory items."""
 
-from gilded_rose import DefaultUpdater, GildedRose, Item
+from gilded_rose import DefaultUpdater, Item, register_updater
 
 AGED_BRIE = 'Aged Brie'
 
 
-@GildedRose.register_updater(AGED_BRIE)
+@register_updater(AGED_BRIE)
 class AgedBrieUpdater(DefaultUpdater):
     """Updater for aged brie items."""
 

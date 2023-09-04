@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from typing import Callable, ClassVar, Iterable, Protocol
+from typing import Callable, Iterable, Protocol
+
+item_handlers: dict[str, type[SupportsUpdate]] = {}
 
 
 class SupportsUpdate(Protocol):
@@ -13,35 +15,6 @@ class SupportsUpdate(Protocol):
 
     def update_sell_in(self, item: Item) -> None:
         """Update the sell-in days for an item."""
-
-
-class GildedRose:
-    """Main wrapper class."""
-
-    item_handlers: ClassVar[dict[str, type[SupportsUpdate]]] = {}
-
-    def __init__(self, items: Iterable[Item]) -> None:
-        self.items = items
-        """NOTE: Do not change attribute."""
-
-    def update_quality(self) -> None:
-        """Update quality for all items at the end of each day."""
-        for item in self.items:
-            updater = self.item_handlers.get(item.name, DefaultUpdater)()
-            updater.update_quality(item)
-            updater.update_sell_in(item)
-
-    @classmethod
-    def register_updater(
-        cls, label: str
-    ) -> Callable[[type[SupportsUpdate]], type[SupportsUpdate]]:
-        """Register an updater."""
-
-        def wrapper(updater: type[SupportsUpdate]) -> type[SupportsUpdate]:
-            cls.item_handlers[label] = updater
-            return updater
-
-        return wrapper
 
 
 class Item:
@@ -77,3 +50,23 @@ class DefaultUpdater:
     def update_sell_in(self, item: Item) -> None:
         """Update the sell-in days for an item."""
         item.sell_in -= 1
+
+
+def update_quality(items: Iterable[Item]) -> None:
+    """Update quality for all items at the end of each day."""
+    for item in items:
+        updater = item_handlers.get(item.name, DefaultUpdater)()
+        updater.update_quality(item)
+        updater.update_sell_in(item)
+
+
+def register_updater(
+    label: str,
+) -> Callable[[type[SupportsUpdate]], type[SupportsUpdate]]:
+    """Register an updater."""
+
+    def wrapper(updater: type[SupportsUpdate]) -> type[SupportsUpdate]:
+        item_handlers[label] = updater
+        return updater
+
+    return wrapper

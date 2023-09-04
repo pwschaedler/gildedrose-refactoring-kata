@@ -1,11 +1,11 @@
 """Module for backstage pass inventory items."""
 
-from gilded_rose import DefaultUpdater, GildedRose, Item
+from gilded_rose import DefaultUpdater, Item, register_updater
 
 BACKSTAGE_PASS = 'Backstage passes to a TAFKAL80ETC concert'
 
 
-@GildedRose.register_updater(BACKSTAGE_PASS)
+@register_updater(BACKSTAGE_PASS)
 class BackstagePassUpdater(DefaultUpdater):
     """Updater for backstage pass items."""
 

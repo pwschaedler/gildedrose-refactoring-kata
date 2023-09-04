@@ -1,11 +1,11 @@
 """Module for Sulfuras."""
 
-from gilded_rose import DefaultUpdater, GildedRose, Item
+from gilded_rose import DefaultUpdater, Item, register_updater
 
 SULFURAS = 'Sulfuras, Hand of Ragnaros'
 
 
-@GildedRose.register_updater(SULFURAS)
+@register_updater(SULFURAS)
 class SulfurasUpdater(DefaultUpdater):
     """Updater for Sulfuras."""
 
